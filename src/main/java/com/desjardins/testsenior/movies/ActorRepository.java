@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface ActorRepository extends JpaRepository<Actor, Long> {
 
 }

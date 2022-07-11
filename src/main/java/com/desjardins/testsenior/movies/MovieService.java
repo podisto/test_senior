@@ -26,25 +26,50 @@ public class MovieService {
 	public MovieResponse byId(Long id) {
 		log.info("find movie by id {} ", id);
 		Optional<Movie> optionalMovie = movieRepository.findById(id);
-		return optionalMovie.map(this::toDto).orElseThrow(() -> new MovieNotFoundException("Le film avec l'id " +id+ " est introuvable"));
+		return optionalMovie.map(this::toMovieDto).orElseThrow(() -> new MovieNotFoundException("Le film avec l'id " +id+ " est introuvable"));
 	}
+	
+	public MovieResponse add(MovieRequest request) {
+		log.info("Add movie {} ", request);
+		Movie movie = toMovieEntity(request);
+		Movie created = movieRepository.save(movie);
+		return toMovieDto(created);
+	}
+	
 
-	private MovieResponse toDto(Movie movie) {
+	private MovieResponse toMovieDto(Movie movie) {
 		MovieResponse dto = new MovieResponse();
 		dto.setId(movie.getId());
 		dto.setTitle(movie.getTitle());
 		dto.setDescription(movie.getDescription());
-		List<ActorResponse> actors = getActors(movie);
-		dto.setActors(actors);
-		return null;
+		List<ActorResponse> actorsDto = movie.getActors().stream().map(this::toActorDto).collect(toList());
+		dto.setActors(actorsDto);
+		return dto;
 	}
 
-	private List<ActorResponse> getActors(Movie movie) {
-		return movie.getActors().stream()
-				.map(this::toActorDto)
-				.collect(toList());
+
+	private Movie toMovieEntity(MovieRequest request) {
+		Movie movie = new Movie();
+		movie.setTitle(request.getTitle());
+		movie.setDescription(request.getDescription());
+		List<Actor> actors = getActors(request);
+		for (Actor a: actors) {
+			movie.addActor(a);
+		}
+		return movie;
+	}
+	
+	private List<Actor> getActors(MovieRequest request) {
+		return request.getActors().stream().map(this::toActorEntity).collect(toList());
 	}
 
+	private Actor toActorEntity(ActorRequest request) {
+		Actor actor = new Actor();
+		actor.setLastName(request.getLastName());
+		actor.setFirstName(request.getFirstName());
+		return actor;
+	}
+	
 	private ActorResponse toActorDto(Actor actor) {
 		return ActorResponse.builder()
 				.id(actor.getId())
@@ -52,5 +77,6 @@ public class MovieService {
 				.firstName(actor.getFirstName())
 				.build();
 	}
+
 
 }
