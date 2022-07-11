@@ -1,13 +1,22 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.service;
 
 import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 import org.springframework.stereotype.Service;
+
+import com.desjardins.testsenior.movies.dto.ActorRequest;
+import com.desjardins.testsenior.movies.dto.ActorResponse;
+import com.desjardins.testsenior.movies.dto.MovieRequest;
+import com.desjardins.testsenior.movies.dto.MovieResponse;
+import com.desjardins.testsenior.movies.errors.MovieNotFoundException;
+import com.desjardins.testsenior.movies.model.Actor;
+import com.desjardins.testsenior.movies.model.Movie;
+import com.desjardins.testsenior.movies.persistence.MovieRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,25 +58,12 @@ public class MovieService {
 
 
 	private Movie toMovieEntity(MovieRequest request) {
-		Movie movie = new Movie();
-		movie.setTitle(request.getTitle());
-		movie.setDescription(request.getDescription());
-		List<Actor> actors = getActors(request);
-		for (Actor a: actors) {
-			movie.addActor(a);
-		}
-		return movie;
-	}
-	
-	private List<Actor> getActors(MovieRequest request) {
-		return request.getActors().stream().map(this::toActorEntity).collect(toList());
+		List<Actor> actors = request.getActors().stream().map(this::toActorEntity).collect(toList());
+		return new Movie(request.getTitle(), request.getDescription(), actors);
 	}
 
 	private Actor toActorEntity(ActorRequest request) {
-		Actor actor = new Actor();
-		actor.setLastName(request.getLastName());
-		actor.setFirstName(request.getFirstName());
-		return actor;
+		return new Actor(request.getLastName(), request.getFirstName());
 	}
 	
 	private ActorResponse toActorDto(Actor actor) {

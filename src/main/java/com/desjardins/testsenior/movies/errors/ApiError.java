@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.errors;
 
 import java.time.LocalDateTime;
 

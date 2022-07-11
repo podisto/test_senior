@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,5 +33,14 @@ public class Actor {
 	
 	@ManyToOne
 	private Movie movie;
+	
+	protected Actor() {
+		
+	}
+	
+	public Actor(String lastName, String firstName) {
+		this.lastName = lastName;
+		this.firstName = firstName;
+	}
 	
 }

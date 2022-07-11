@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,17 @@ public class Movie {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Actor> actors = new ArrayList<>();
 	
-	public void addActor(Actor anActor) {
+	protected Movie() {
+		
+	}
+	
+	public Movie(String title, String description, List<Actor> actors) {
+		this.title = title;
+		this.description = description;
+		actors.forEach(this::addActor);
+	}
+	
+	private void addActor(Actor anActor) {
 		this.actors.add(anActor);
 		anActor.setMovie(this);
 	}

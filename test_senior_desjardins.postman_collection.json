@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "b0827f41-8a73-4f52-883a-71564d23527e",
+		"name": "test_senior_desjardins",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get movie by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2022/api/film/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2022",
+					"path": [
+						"api",
+						"film",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add movie",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"titre\":\"Star Wars: The Empire Strikes Back\",\n   \"description\":\"Darth Vader is adamant about turning Luke Skywalker to the dark side.\",\n   \"acteurs\":[\n      {\n         \"nom\":\"Ford\",\n         \"prenom\":\"Harrison\"\n      },\n      {\n         \"nom\":\"Hamill\",\n         \"prenom\":\"Mark\"\n      }\n   ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2022/api/film",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2022",
+					"path": [
+						"api",
+						"film"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

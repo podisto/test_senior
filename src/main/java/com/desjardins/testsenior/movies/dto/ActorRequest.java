@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,9 +14,8 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ActorResponse {
+public class ActorRequest {
 	
-	private Long id;
 	@JsonProperty("nom")
 	private String lastName;
 	@JsonProperty("prenom")

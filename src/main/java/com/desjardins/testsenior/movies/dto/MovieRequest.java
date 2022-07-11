@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.desjardins.testsenior.movies;
+package com.desjardins.testsenior.movies.dto;
 
 import java.util.ArrayList;
 import java.util.List;
