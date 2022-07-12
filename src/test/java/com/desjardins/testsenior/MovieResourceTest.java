@@ -5,6 +5,9 @@ package com.desjardins.testsenior;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.desjardins.testsenior.movies.api.MovieResource;
 import com.desjardins.testsenior.movies.dto.ActorRequest;
@@ -54,7 +55,7 @@ class MovieResourceTest {
 
 		given(movieService.byId(1L)).willReturn(expectedMovie);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/film/1")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(get("/film/1")).andExpect(status().isOk());
 
 	}
 
@@ -62,8 +63,9 @@ class MovieResourceTest {
 	void findById_ShouldThrowMovieNotFoundException_WhenProvidedIdNotExists() throws Exception {
 		given(movieService.byId(1L)).willThrow(new MovieNotFoundException("Le film avec l'id 1 est introuvable"));
 		
-		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/film/1"))
-				.andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+		MvcResult result = mockMvc.perform(get("/film/1"))
+				.andExpect(status().isNotFound())
+				.andReturn();
 
 		ApiError error = new ApiError(HttpStatus.NOT_FOUND, "Le film avec l'id 1 est introuvable");
 
@@ -81,10 +83,10 @@ class MovieResourceTest {
 				.description("Darth Vader is adamant about turning Luke Skywalker to the dark side.")
 				.actors(actors)
 				.build();
-		mockMvc.perform(MockMvcRequestBuilders.post("/film")
+		mockMvc.perform(post("/film")
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(request)))
-				.andExpect(MockMvcResultMatchers.status().isCreated());
+				.andExpect(status().isCreated());
 	}
 	
 	@Test
@@ -95,9 +97,9 @@ class MovieResourceTest {
 				.description("Darth Vader is adamant about turning Luke Skywalker to the dark side.")
 				.actors(actors)
 				.build();
-		mockMvc.perform(MockMvcRequestBuilders.post("/film")
+		mockMvc.perform(post("/film")
 				.content(objectMapper.writeValueAsString(request)))
-				.andExpect(MockMvcResultMatchers.status().is(415));
+				.andExpect(status().is(415));
 	}
 
 	private List<ActorRequest> buildActors() {
