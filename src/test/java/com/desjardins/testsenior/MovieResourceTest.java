@@ -3,7 +3,7 @@
  */
 package com.desjardins.testsenior;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +22,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.desjardins.testsenior.movies.api.MovieResource;
+import com.desjardins.testsenior.movies.dto.ActorRequest;
 import com.desjardins.testsenior.movies.dto.ActorResponse;
+import com.desjardins.testsenior.movies.dto.MovieRequest;
 import com.desjardins.testsenior.movies.dto.MovieResponse;
 import com.desjardins.testsenior.movies.errors.ApiError;
 import com.desjardins.testsenior.movies.errors.MovieNotFoundException;
@@ -70,6 +71,39 @@ class MovieResourceTest {
 		String expectedResponseBody = objectMapper.writeValueAsString(error);
 		assertThat(actualResponseBody).isEqualTo(expectedResponseBody);
 
+	}
+	
+	@Test
+	void addAMovie() throws Exception {
+		List<ActorRequest> actors = buildActors();
+		MovieRequest request = MovieRequest.builder()
+				.title("Star Wars: The Empire Strikes Back")
+				.description("Darth Vader is adamant about turning Luke Skywalker to the dark side.")
+				.actors(actors)
+				.build();
+		mockMvc.perform(MockMvcRequestBuilders.post("/film")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(request)))
+				.andExpect(MockMvcResultMatchers.status().isCreated());
+	}
+	
+	@Test
+	void addAMovie_ShouldReturnContentNotSupported_WhenProvidedContentTypeIsNotJsonCompliant() throws Exception {
+		List<ActorRequest> actors = buildActors();
+		MovieRequest request = MovieRequest.builder()
+				.title("Star Wars: The Empire Strikes Back")
+				.description("Darth Vader is adamant about turning Luke Skywalker to the dark side.")
+				.actors(actors)
+				.build();
+		mockMvc.perform(MockMvcRequestBuilders.post("/film")
+				.content(objectMapper.writeValueAsString(request)))
+				.andExpect(MockMvcResultMatchers.status().is(415));
+	}
+
+	private List<ActorRequest> buildActors() {
+		ActorRequest actor1 = ActorRequest.builder().lastName("Ford").firstName("Harrison").build();
+		ActorRequest actor2 = ActorRequest.builder().lastName("Hamill").firstName("Mark").build();
+		return Arrays.asList(actor1, actor2);
 	}
 
 	private MovieResponse getExpectedMovie() {
